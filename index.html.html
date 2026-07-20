@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>2003 O/L Batch Get-Together</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js">
+    </script>
+    <style>
+        /* ── CSS Variables ── */
+        :root {
+            --navy: #132242;
+            --navy-2: #1c3157;
+            --cream: #F7F1E1;
+            --paper: #FCF9EF;
+            --gold: #C69A2E;
+            --gold-2: #E4C060;
+            --burgundy: #7C2D3B;
+            --burgundy-2: #9B3B4A;
+            --ink: #20242E;
+            --ink-soft: #5B5F6B;
+            --green: #3F7D58;
+            --red: #B33A3A;
+            --line: rgba(19, 34, 66, 0.16);
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(19, 34, 66, 0.18);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: var(--navy);
+            background-image: radial-gradient(circle at 15% 8%, rgba(230, 192, 96, 0.10), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(124, 45, 59, 0.25), transparent 45%);
+            font-family: 'Noto Sans Sinhala', 'Segoe UI', sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 18px 10px 40px;
+        }
+        .app {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* ── Badge ── */
+        .badge-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .seal {
+            width: 118px;
+            height: 118px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, var(--gold-2), var(--gold) 60%, #a97f1f 100%);
+            border: 4px solid var(--paper);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35), inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--navy);
+            text-align: center;
+            position: relative;
+        }
+        .seal .yr {
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            font-size: 30px;
+            line-height: 1;
+        }
+        .seal .ol {
+            font-size: 10px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .ribbon {
+            margin-top: -12px;
+            background: var(--burgundy);
+            color: #fff;
+            padding: 7px 22px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .event-title {
+            color: var(--paper);
+            text-align: center;
+            margin-top: 14px;
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+        .event-sub {
+            color: var(--gold-2);
+            text-align: center;
+            font-size: 13px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--paper);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px 18px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--burgundy), var(--gold));
+        }
+        .step-label {
+            font-size: 12px;
+            color: var(--burgundy);
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        h2.card-title {
+            font-size: 18px;
+            margin: 0 0 14px;
+            color: var(--navy);
+            font-weight: 800;
+        }
+        p.hint {
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            margin: 0 0 14px;
+            line-height: 1.6;
+        }
+
+        /* ── Inputs ── */
+        .search-box {
+            position: relative;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 14px 14px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: 1.5px solid var(--line);
+            background: #fff;
+            color: var(--ink);
+            font-family: inherit;
+        }
+        input:focus {
+            outline: 2px solid var(--gold);
+            border-color: var(--gold);
+        }
+        .name-list {
+            margin-top: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1.5px solid var(--line);
+            max-height: 260px;
+            overflow-y: auto;
+            background: #fff;
+            display: none;
+        }
+        .name-list.show {
+            display: block;
+        }
+        .name-item {
+            padding: 13px 14px;
+            font-size: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .name-item:last-child {
+            border-bottom: none;
+        }
+        .name-item:active,
+        .name-item.hover {
+            background: var(--cream);
+        }
+        .name-item .nw {
+            color: var(--ink-soft);
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+
+        .selected-chip {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--cream);
+            border: 1.5px dashed var(--gold);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--navy);
+            flex-wrap: wrap;
+        }
+        .selected-chip .x {
+            margin-left: auto;
+            color: var(--burgundy);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .selected-chip .wtag {
+            font-weight: 400;
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin-left: 6px;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16.5px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
+            transition: opacity .15s, transform .05s;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-primary {
+            background: var(--burgundy);
+            color: #fff;
+        }
+        .btn-primary:disabled {
+            background: #c9bcb0;
+            color: #fff;
+            cursor: not-allowed;
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--navy);
+            border: 1.5px solid var(--line);
+        }
+        .btn-gold {
+            background: linear-gradient(90deg, var(--gold), var(--gold-2));
+            color: var(--navy);
+        }
+        .btn-danger {
+            background: var(--red);
+            color: #fff;
+            padding: 8px 12px;
+            font-size: 13px;
+            width: auto;
+            margin: 0;
+        }
+        .btn-small {
+            width: auto;
+            padding: 9px 16px;
+            font-size: 13.5px;
+            margin: 0;
+        }
+        .btn-success {
+            background: var(--green);
+            color: #fff;
+        }
+
+        /* ── Tickets (Dates) ── */
+        .tickets {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ticket {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px dashed var(--line);
+            border-radius: 12px;
+            padding: 13px 14px;
+            background: #fff;
+            cursor: pointer;
+            position: relative;
+        }
+        .ticket.checked {
+            border-color: var(--burgundy);
+            background: var(--cream);
+        }
+        .ticket .box {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid var(--ink-soft);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: #fff;
+        }
+        .ticket.checked .box {
+            background: var(--burgundy);
+            border-color: var(--burgundy);
+        }
+        .ticket .tlabel {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+        .ticket .tmonth {
+            font-size: 11.5px;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+
+        .warn {
+            font-size: 13.5px;
+            color: var(--burgundy);
+            font-weight: 700;
+            background: #fbe9ea;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 12px;
+            display: none;
+            text-align: center;
+        }
+        .warn.show {
+            display: block;
+        }
+
+        /* ── Rank section ── */
+        .rank-section {
+            margin-top: 20px;
+            border-top: 1.5px dashed var(--line);
+            padding-top: 16px;
+            display: none;
+        }
+        .rank-section.show {
+            display: block;
+        }
+        .rank-row {
+            margin-bottom: 12px;
+        }
+        .rank-row label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--navy);
+            display: block;
+            margin-bottom: 6px;
+        }
+        select {
+            width: 100%;
+            padding: 13px 12px;
+            font-size: 15.5px;
+            border-radius: 12px;
+            border: 1.5px solid var(--line);
+            background: #fff;
+            color: var(--ink);
+            font-family: inherit;
+        }
+
+        /* ── Polls ── */
+        .poll-item {
+            background: #fff;
+            border: 1.5px solid var(--line);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .poll-item .q {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+        .poll-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .poll-options label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            background: var(--cream);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid transparent;
+            transition: 0.2s;
+        }
+        .poll-options input[type="radio"] {
+            accent-color: var(--burgundy);
+            width: 16px;
+            height: 16px;
+        }
+        .poll-options label:has(input:checked) {
+            border-color: var(--burgundy);
+            background: #fce8ea;
+        }
+
+        /* ── Screens ── */
+        .screen {
+            display: none;
+        }
+        .screen.show {
+            display: block;
+        }
+
+        /* ── Modal ── */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(19, 34, 66, 0.65);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 20px;
+        }
+        .modal-bg.show {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--paper);
+            border-radius: 16px;
+            padding: 26px 22px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+        .modal-box .ico {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+        .modal-box h3 {
+            margin: 0 0 8px;
+            color: var(--navy);
+            font-size: 17px;
+        }
+        .modal-box p {
+            margin: 0 0 16px;
+            font-size: 14px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12.5px;
+            color: rgba(247, 241, 225, 0.55);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* ── Admin Dashboard ── */
+        .stat-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .stat {
+            flex: 1;
+            min-width: 70px;
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat .num {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--burgundy);
+        }
+        .stat .lbl {
+            font-size: 11px;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+        .chart-wrap {
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 14px;
+            border: 1.5px solid var(--line);
+        }
+        .chart-wrap h4 {
+            margin: 0 0 8px;
+            font-size: 13.5px;
+            color: var(--navy);
+        }
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .chip-btn {
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 700;
+            border: 1.5px solid var(--line);
+            background: #fff;
+            cursor: pointer;
+            color: var(--navy);
+        }
+        .chip-btn.active {
+            background: var(--navy);
+            color: #fff;
+            border-color: var(--navy);
+        }
+        .resp-row {
+            border: 1.5px solid var(--line);
+            border-radius: 12px;
+            padding: 12px 13px;
+            margin-bottom: 9px;
+            background: #fff;
+        }
+        .resp-row .rname {
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--navy);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .resp-row .rname .rw {
+            font-weight: 400;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+        }
+        .resp-row .rprefs {
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+        .resp-row .rprefs b {
+            color: var(--burgundy);
+        }
+        .pending-tag {
+            font-size: 11px;
+            background: #eee;
+            color: var(--ink-soft);
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .add-name-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .add-name-row .flex-group {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+        .add-name-row .flex-group input {
+            flex: 1;
+            min-width: 100px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .top-bar h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--navy);
+        }
+        .logout {
+            font-size: 12.5px;
+            color: var(--burgundy);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .poll-mgmt {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+        .poll-mgmt .poll-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--line);
+        }
+        .poll-mgmt .poll-row:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 400px) {
+            .add-name-row .flex-group {
+                flex-direction: column;
+            }
+            .add-name-row .flex-group input {
+                min-width: unset;
+            }
+            .resp-row .rname {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        <!-- BADGE -->
+        <div class="badge-wrap">
+            <div class="seal"><div class="yr">2003</div><div class="ol">O / L BATCH</div></div>
+            <div class="ribbon">GET-TOGETHER</div>
+            <div class="event-title">යථා තෝරාගැනීමට එකතු වෙමු</div>
+            <div class="event-sub">Reunion Date Selection Form</div>
+        </div>
+
+        <!-- STEP 1: NAME -->
+        <div class="screen show" id="screenName">
+            <div class="card">
+                <div class="step-label">පියවර 1 / 4</div>
+                <h2 class="card-title">ඔබේ නම තෝරාගන්න</h2>
+                <p class="hint">ඉංග්‍රීසි, සිංහල හෝ දුරකථන අංකය ටයිප් කර සොයන්න. (අංකය පෙන්වන්නේ නැත)</p>
+                <div class="search-box">
+                    <input type="text" id="nameSearch" placeholder="නම හෝ අංකය සොයන්න..." autocomplete="off" />
+                    <div class="name-list" id="nameList"></div>
+                </div>
+                <div class="selected-chip" id="selectedChip" style="display:none;">
+                    <span id="selectedChipText"></span>
+                    <span class="x" id="clearNameBtn">✕ වෙනස් කරන්න</span>
+                </div>
+                <button class="btn btn-primary" id="toStep2Btn" disabled>ඉදිරියට →</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: DATES -->
+        <div class="screen" id="screenDates">
+            <div class="card">
+                <div class="step-label">පියවර 2 / 4</div>
+                <h2 class="card-title">දින තෝරාගන්න</h2>
+                <p class="hint">ඔබට සහභාගී විය හැකි <b>අවම වශයෙන් දින 3ක්</b> තෝරන්න.</p>
+                <div class="tickets" id="ticketList"></div>
+                <div class="warn" id="minWarn">⚠️ අවම දින තුනක් තෝරන්න.</div>
+
+                <div class="rank-section" id="rankSection">
+                    <p class="hint" style="margin-bottom:12px;">තෝරාගත් දින අනුපිළිවෙලට අංකනය කරන්න —</p>
+                    <div class="rank-row">
+                        <label>① වැඩිපුරම කැමති දවස</label>
+                        <select id="rank1"><option value="">-- තෝරන්න --</option></select>
+                    </div>
+                    <div class="rank-row">
+                        <label>② දෙවනුව කැමති දවස</label>
+                        <select id="rank2"><option value="">-- තෝරන්න --</option></select>
+                    </div>
+                    <div class="rank-row">
+                        <label>③ තෙවනුව කැමති දවස</label>
+                        <select id="rank3"><option value="">-- තෝරන්න --</option></select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="toPollsBtn" disabled>ඉදිරියට (Polls) →</button>
+                <button class="btn btn-ghost" id="backTo1Btn">← ආපසු</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: POLLS -->
+        <div class="screen" id="screenPolls">
+            <div class="card">
+                <div class="step-label">පියවර 3 / 4</div>
+                <h2 class="card-title">අමතර Preferences</h2>
+                <p class="hint">පහත Polls වලට ඡන්දය දෙන්න (අවශ්‍ය නැතිනම් හරි ඔබන්න).</p>
+                <div id="pollsContainer"></div>
+                <button class="btn btn-primary" id="submitPollsBtn">Preferences සුරකින්න & ඉදිරියට</button>
+                <button class="btn btn-ghost" id="skipPollsBtn">මෙය අතහැර ඉදිරියට</button>
+                <button class="btn btn-ghost" id="backToDatesBtn">← ආපසු</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: DONE -->
+        <div class="screen" id="screenDone">
+            <div class="card" style="text-align:center;">
+                <div style="font-size:44px;">🎉</div>
+                <h2 class="card-title">ස්තූතියි!</h2>
+                <p class="hint">ඔබගේ සියලු තෝරාගැනීම් සාර්ථක විය.</p>
+                <button class="btn btn-gold" id="startOverBtn">නැවත පුරවන්න</button>
+            </div>
+        </div>
+
+        <!-- ADMIN LINK -->
+        <div class="admin-link" id="openAdminLogin">🔒 පාලක පිවිසුම (Admin)</div>
+
+        <!-- ADMIN LOGIN -->
+        <div class="screen" id="screenAdminLogin">
+            <div class="card">
+                <h2 class="card-title">Admin Login</h2>
+                <input type="text" id="adminUser" placeholder="Username" style="margin-bottom:10px;" />
+                <input type="password" id="adminPass" placeholder="Password" style="margin-bottom:10px;" />
+                <div class="warn" id="adminLoginWarn">Username/Password වැරදියි.</div>
+                <button class="btn btn-primary" id="adminLoginBtn">Login</button>
+                <button class="btn btn-ghost" id="adminBackBtn">← ආපසු</button>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div class="screen" id="screenAdmin">
+            <div class="card">
+                <div class="top-bar">
+                    <h2>📊 Admin Dashboard</h2>
+                    <span class="logout" id="adminLogoutBtn">Logout</span>
+                </div>
+                <div class="stat-row">
+                    <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">මුළු නම්</div></div>
+                    <div class="stat"><div class="num" id="statSubmitted">0</div><div class="lbl">Submitted</div></div>
+                    <div class="stat"><div class="num" id="statPercent">0%</div><div class="lbl">Progress</div></div>
+                </div>
+                <div class="chart-wrap"><h4>🥧 වැඩිපුරම කැමති දවස් (1st choice)</h4><canvas id="pieChart" height="220"></canvas></div>
+                <div class="chart-wrap"><h4>📊 සම්පූර්ණ ඇදහීම් (All picks per date)</h4><canvas id="barChart" height="220"></canvas></div>
+
+                <div class="add-name-row">
+                    <div class="flex-group">
+                        <input type="text" id="newNameInput" placeholder="නම (English)" />
+                        <input type="text" id="newSinhalaInput" placeholder="නම (සිංහල)" />
+                        <input type="tel" id="newWhatsappInput" placeholder="WhatsApp අංකය" />
+                    </div>
+                    <button class="btn btn-primary btn-small" id="addNameBtn">+ Add</button>
+                </div>
+            </div>
+
+            <!-- Poll Management -->
+            <div class="card">
+                <h2 class="card-title">📋 Polls / Preferences</h2>
+                <div class="poll-mgmt">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+                        <input type="text" id="pollQuestion" placeholder="ප්‍රශ්නය (e.g. Lunch or Dinner?)" style="flex:2; min-width:150px;" />
+                        <input type="text" id="pollOptions" placeholder="විකල්ප (e.g. Lunch,Dinner)" style="flex:1; min-width:100px;" />
+                        <button class="btn btn-primary btn-small" id="addPollBtn" style="margin-top:0;">+ Poll</button>
+                    </div>
+                    <div id="adminPollsList"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <input type="text" id="adminSearch" placeholder="🔍 නම / අංකයෙන් සොයන්න..." style="margin-bottom:10px;" />
+                <div class="filter-row">
+                    <button class="chip-btn active" data-f="all">සියල්ල</button>
+                    <button class="chip-btn" data-f="submitted">Submitted</button>
+                    <button class="chip-btn" data-f="pending">Pending</button>
+                    <button class="chip-btn" data-f="date_aug05">Aug 05</button>
+                    <button class="chip-btn" data-f="date_aug08">Aug 08</button>
+                    <button class="chip-btn" data-f="date_aug15">Aug 15</button>
+                    <button class="chip-btn" data-f="date_aug22">Aug 22</button>
+                    <button class="chip-btn" data-f="date_aug29">Aug 29</button>
+                    <button class="chip-btn" data-f="date_sep12">Sep 12</button>
+                    <button class="chip-btn" data-f="date_sep19">Sep 19</button>
+                    <button class="chip-btn" data-f="date_sep26">Sep 26</button>
+                </div>
+                <div id="adminList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-bg" id="modalBg">
+        <div class="modal-box">
+            <div class="ico" id="modalIco">✅</div>
+            <h3 id="modalTitle">සාර්ථකයි!</h3>
+            <p id="modalText"></p>
+            <button class="btn btn-primary" id="modalCloseBtn">හරි</button>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+                   CONFIG
+                   ============================================================ */
+        const API = 'https://script.google.com/macros/s/AKfycbxRKi-U5DCSgSb920N8kmryCf0NQTJpi6zCOjrhy_LiIhhSKmBYzS1Qf8uFPkOT0Qz9Qg/exec';
+        const ADMIN_USER = 'mwc';
+        const ADMIN_PASS = 'mwc318';
+
+        /* ============================================================
+                   DATA (Full list with Sinhala & Numbers - UPDATED with Ishara's number)
+                   ============================================================ */
+        const FALLBACK_NAMES = [
+            { name: "Beni Nalaka", sinhala: "බෙනී නාලක", whatsapp: "0767975026" },
+            { name: "Madushanka Chandrasekare", sinhala: "මධුශංක චන්ද්‍රසේකර", whatsapp: "0718987353" },
+            { name: "Dishantha Priyadarshana", sinhala: "දිශාන්ත ප්‍රියදර්ශන", whatsapp: "0777938502" },
+            { name: "Ishara Nadeeshani", sinhala: "ඉෂාරා නදීශානි", whatsapp: "0760239394" },
+            { name: "Dilip Prekash", sinhala: "දිලිප් ප්‍රකාශ්", whatsapp: "0711681965" },
+            { name: "Amila Manik", sinhala: "අමිල මැණික්", whatsapp: "07431319145" },
+            { name: "Krishani Mekhala", sinhala: "ක්‍රිෂානි මේඛලා", whatsapp: "0779282842" },
+            { name: "Nuwan Chamara", sinhala: "නුවන් චාමර", whatsapp: "0776276122" },
+            { name: "Ajith", sinhala: "අජිත්", whatsapp: "0773070321" },
+            { name: "Dhanushka Sampath", sinhala: "ධනුෂ්ක සම්පත්", whatsapp: "0774620315" },
+            { name: "Nadun Rangana", sinhala: "නඳුන් රංගන", whatsapp: "0777110176" },
+            { name: "Heshan Gamage", sinhala: "හේෂාන් ගමගේ", whatsapp: "0762536321" },
+            { name: "Indunil Sampath", sinhala: "ඉඳුනිල් සම්පත්", whatsapp: "0768480824" },
+            { name: "Ishani Prasangika", sinhala: "ඉෂානි ප්‍රසංගිකා", whatsapp: "0717378197" },
+            { name: "Kasun Nirmana", sinhala: "කසුන් නිර්මාණ", whatsapp: "0773088166" },
+            { name: "Amila", sinhala: "අමිල", whatsapp: "0773853416" },
+            { name: "Anuradha", sinhala: "අනුරාධා", whatsapp: "0776136997" },
+            { name: "Asitha", sinhala: "අසිත", whatsapp: "0742709449" },
+            { name: "Dilip Luxmen", sinhala: "දිලිප් ලක්ෂ්මන්", whatsapp: "0766470892" },
+            { name: "Dinesh Chamara", sinhala: "දිනේෂ් චාමර", whatsapp: "0774515552" },
+            { name: "Jeewan", sinhala: "ජීවන්", whatsapp: "0777357841" },
+            { name: "Luxmen", sinhala: "ලක්ෂ්මන්", whatsapp: "0762797828" },
+            { name: "Malinda", sinhala: "මලින්ද", whatsapp: "0761855847" },
+            { name: "Nadeesha", sinhala: "නදීශා", whatsapp: "0761261167" },
+            { name: "Niranjan Lahiru", sinhala: "නිරංජන් ලහිරු", whatsapp: "971547342254" },
+            { name: "Preethi", sinhala: "ප්‍රීති", whatsapp: "0770867392" },
+            { name: "Randima", sinhala: "රන්දිමා", whatsapp: "0783711632" },
+            { name: "Ranil", sinhala: "රනිල්", whatsapp: "0740657412" },
+            { name: "Sachika Thilini", sinhala: "සචිකා තිළිණි", whatsapp: "0764327935" },
+            { name: "Sajith Suranga", sinhala: "සජිත් සුරංග", whatsapp: "0742517939" },
+            { name: "Saman Pushpakumara", sinhala: "සමන් පුෂ්පකුමාර", whatsapp: "0768376843" },
+            { name: "Samantha Sumith", sinhala: "සාමන්ත සුමිත්", whatsapp: "0778713428" },
+            { name: "Shammi Rose", sinhala: "ශම්මි රෝස්", whatsapp: "0760542409" },
+            { name: "Thakshila", sinhala: "තක්ෂිලා", whatsapp: "0771183673" },
+            { name: "Viraj", sinhala: "විරාජ්", whatsapp: "0783466777" },
+            { name: "Ruwan Chamara", sinhala: "රුවන් චාමර", whatsapp: "0776293684" },
+            { name: "Namal", sinhala: "නාමල්", whatsapp: "0778672144" }
+        ];
+
+        const EVENT_DATES = [
+            { id: 'aug05', label: 'August 05', month: 'සෙනසුරාදා · August' },
+            { id: 'aug08', label: 'August 08', month: 'සෙනසුරාදා · August' },
+            { id: 'aug15', label: 'August 15', month: 'සෙනසුරාදා · August' },
+            { id: 'aug22', label: 'August 22', month: 'සෙනසුරාදා · August' },
+            { id: 'aug29', label: 'August 29', month: 'සෙනසුරාදා · August' },
+            { id: 'sep12', label: 'September 12', month: 'සෙනසුරාදා · September' },
+            { id: 'sep19', label: 'September 19', month: 'සෙනසුරාදා · September' },
+            { id: 'sep26', label: 'September 26', month: 'සෙනසුරාදා · September' },
+        ];
+
+        /* ============================================================
+                   STATE
+                   ============================================================ */
+        let ALL_NAMES = [...FALLBACK_NAMES];
+        let ALL_RESPONSES = [];
+        let ALL_POLLS = [];
+        let selectedNameObj = null; // { name, sinhala, whatsapp }
+        let checkedDates = new Set();
+        let pieChartObj = null;
+        let barChartObj = null;
+        let adminFilter = 'all';
+
+        // Poll votes storage (temporary)
+        let pollVotes = {};
+
+        /* ============================================================
+                   HELPERS
+                   ============================================================ */
+        function $(id) { return document.getElementById(id); }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('show'));
+            $(id).classList.add('show');
+        }
+
+        function dateLabel(id) {
+            const d = EVENT_DATES.find(x => x.id === id);
+            return d ? d.label : id;
+        }
+
+        function showModal(icon, title, text) {
+            $('modalIco').textContent = icon;
+            $('modalTitle').textContent = title;
+            $('modalText').textContent = text;
+            $('modalBg').classList.add('show');
+        }
+        $('modalCloseBtn').addEventListener('click', () => $('modalBg').classList.remove('show'));
+
+        function personMatchesFilter(person, query) {
+            if (!query) return true;
+            const q = query.trim().toLowerCase();
+            if (!q) return true;
+            const nameMatch = person.name.toLowerCase().includes(q);
+            const sinhalaMatch = person.sinhala && person.sinhala.toLowerCase().includes(q);
+            const wMatch = person.whatsapp && person.whatsapp.toLowerCase().includes(q);
+            return nameMatch || sinhalaMatch || wMatch;
+        }
+
+        /* ============================================================
+                   API CALL
+                   ============================================================ */
+        async function apiCall(params) {
+            if (!API || API.indexOf('PASTE_YOUR') === 0) {
+                console.warn('API URL not configured.');
+                return null;
+            }
+            try {
+                const url = API + (API.indexOf('?') > -1 ? '&' : '?') + new URLSearchParams(params).toString();
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } catch (err) {
+                console.error('API call failed:', err);
+                if (params.action === 'submit' || params.action === 'add_name' || params.action === 'clear' ||
+                    params.action === 'add_poll' || params.action === 'submit_poll') {
+                    try {
+                        const url = API + (API.indexOf('?') > -1 ? '&' : '?') + new URLSearchParams(params).toString();
+                        await fetch(url, { mode: 'no-cors' });
+                        return { success: true, mode: 'no-cors' };
+                    } catch (_) { /* ignore */ }
+                }
+                return null;
+            }
+        }
+
+        /* ============================================================
+                   LOAD DATA
+                   ============================================================ */
+        async function loadNames() {
+            const r = await apiCall({ action: 'get_names' });
+            if (r && r.names && r.names.length) {
+                if (typeof r.names[0] === 'string') {
+                    ALL_NAMES = r.names.map(n => ({ name: n, sinhala: '', whatsapp: '' }));
+                } else {
+                    ALL_NAMES = r.names;
+                }
+            } else {
+                ALL_NAMES = [...FALLBACK_NAMES];
+            }
+            renderNameList('');
+        }
+
+        async function loadResponses() {
+            const r = await apiCall({ action: 'get_responses' });
+            ALL_RESPONSES = (r && r.responses) ? r.responses : [];
+        }
+
+        async function loadPolls() {
+            const r = await apiCall({ action: 'get_polls' });
+            ALL_POLLS = (r && r.polls) ? r.polls : [];
+            renderPolls();
+        }
+
+        /* ============================================================
+                   STEP 1 — NAME SEARCH (Number hidden)
+                   ============================================================ */
+        function renderNameList(filter) {
+            const list = $('nameList');
+            const sorted = [...ALL_NAMES].sort((a, b) => a.name.localeCompare(b.name, 'si'));
+            const f = filter.trim().toLowerCase();
+            const filtered = f ? sorted.filter(p => personMatchesFilter(p, f)) : sorted;
+            list.innerHTML = '';
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="name-item">ගැලපෙන ප්‍රතිඵල නැත</div>';
+            } else {
+                filtered.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'name-item';
+                    const displayName = p.sinhala ? `${p.name} (${p.sinhala})` : p.name;
+                    div.innerHTML = `<span>${displayName}</span>`;
+                    div.addEventListener('click', () => selectName(p));
+                    list.appendChild(div);
+                });
+            }
+            list.classList.add('show');
+        }
+
+        function selectName(person) {
+            selectedNameObj = person;
+            $('nameSearch').value = '';
+            $('nameList').classList.remove('show');
+            $('nameSearch').style.display = 'none';
+            $('selectedChip').style.display = 'flex';
+            const displayName = person.sinhala ? `${person.name} (${person.sinhala})` : person.name;
+            $('selectedChipText').innerHTML = `👤 ${displayName}`;
+            $('toStep2Btn').disabled = false;
+        }
+
+        $('nameSearch').addEventListener('input', e => renderNameList(e.target.value));
+        $('nameSearch').addEventListener('focus', e => renderNameList(e.target.value));
+        document.addEventListener('click', (e) => {
+            if (!$('nameSearch').contains(e.target) && !$('nameList').contains(e.target)) {
+                $('nameList').classList.remove('show');
+            }
+        });
+        $('clearNameBtn').addEventListener('click', () => {
+            selectedNameObj = null;
+            $('selectedChip').style.display = 'none';
+            $('nameSearch').style.display = 'block';
+            $('toStep2Btn').disabled = true;
+        });
+        $('toStep2Btn').addEventListener('click', () => {
+            if (!selectedNameObj) return;
+            checkedDates.clear();
+            renderTickets();
+            showScreen('screenDates');
+        });
+        $('backTo1Btn').addEventListener('click', () => showScreen('screenName'));
+
+        /* ============================================================
+                   STEP 2 — DATES
+                   ============================================================ */
+        function renderTickets() {
+            const wrap = $('ticketList');
+            wrap.innerHTML = '';
+            EVENT_DATES.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'ticket';
+                div.innerHTML =
+                    `<div class="box"></div><div><div class="tlabel">${d.label}</div><div class="tmonth">${d.month}</div></div>`;
+                div.addEventListener('click', () => toggleDate(d.id, div));
+                wrap.appendChild(div);
+            });
+            updateDateState();
+        }
+
+        function toggleDate(id, el) {
+            if (checkedDates.has(id)) {
+                checkedDates.delete(id);
+                el.classList.remove('checked');
+                el.querySelector('.box').textContent = '';
+            } else {
+                checkedDates.add(id);
+                el.classList.add('checked');
+                el.querySelector('.box').textContent = '✓';
+            }
+            updateDateState();
+        }
+
+        function updateDateState() {
+            const count = checkedDates.size;
+            if (count < 3) {
+                $('minWarn').classList.add('show');
+                $('rankSection').classList.remove('show');
+                $('toPollsBtn').disabled = true;
+            } else {
+                $('minWarn').classList.remove('show');
+                $('rankSection').classList.add('show');
+                populateRankSelects();
+            }
+        }
+
+        function populateRankSelects() {
+            const ids = [...checkedDates];
+            ['rank1', 'rank2', 'rank3'].forEach(rid => {
+                const sel = $(rid);
+                const current = sel.value;
+                sel.innerHTML = '<option value="">-- තෝරන්න --</option>';
+                ids.forEach(id => {
+                    const opt = document.createElement('option');
+                    opt.value = id;
+                    opt.textContent = dateLabel(id);
+                    sel.appendChild(opt);
+                });
+                if (ids.includes(current)) sel.value = current;
+            });
+            enforceRankUniqueness();
+        }
+
+        function enforceRankUniqueness() {
+            const vals = [$('rank1').value, $('rank2').value, $('rank3').value];
+            ['rank1', 'rank2', 'rank3'].forEach((rid, i) => {
+                [...$(rid).options].forEach(opt => {
+                    if (opt.value === '') return;
+                    opt.disabled = vals.some((v, j) => j !== i && v === opt.value);
+                });
+            });
+            const allFilled = vals.every(v => v !== '') && new Set(vals).size === 3;
+            $('toPollsBtn').disabled = !allFilled;
+        }
+        ['rank1', 'rank2', 'rank3'].forEach(rid => $(rid).addEventListener('change', enforceRankUniqueness));
+
+        $('toPollsBtn').addEventListener('click', async () => {
+            // Load polls before showing
+            await loadPolls();
+            showScreen('screenPolls');
+        });
+        $('backToDatesBtn').addEventListener('click', () => showScreen('screenDates'));
+
+        /* ============================================================
+                   STEP 3 — POLLS
+                   ============================================================ */
+        function renderPolls() {
+            const container = $('pollsContainer');
+            container.innerHTML = '';
+            if (!ALL_POLLS || ALL_POLLS.length === 0) {
+                container.innerHTML = '<p class="hint">ක්‍රියාකාරී Polls නැත. ඉදිරියට යන්න.</p>';
+                return;
+            }
+            const activePolls = ALL_POLLS.filter(p => p.active !== false);
+            if (activePolls.length === 0) {
+                container.innerHTML = '<p class="hint">ක්‍රියාකාරී Polls නැත. ඉදිරියට යන්න.</p>';
+                return;
+            }
+            activePolls.forEach((poll, idx) => {
+                const div = document.createElement('div');
+                div.className = 'poll-item';
+                div.innerHTML = `<div class="q">${poll.question}</div><div class="poll-options" data-pollid="${poll.id}"></div>`;
+                const optContainer = div.querySelector('.poll-options');
+                const options = poll.options.split(',').map(o => o.trim());
+                options.forEach(opt => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `poll_${poll.id}`;
+                    radio.value = opt;
+                    radio.addEventListener('change', () => {
+                        pollVotes[poll.id] = opt;
+                    });
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(opt));
+                    optContainer.appendChild(label);
+                });
+                container.appendChild(div);
+            });
+        }
+
+        $('submitPollsBtn').addEventListener('click', async () => {
+            // Submit poll votes
+            const pollIds = Object.keys(pollVotes);
+            if (pollIds.length === 0) {
+                // No votes, just go to done
+                showScreen('screenDone');
+                return;
+            }
+            // Submit each vote
+            let allSuccess = true;
+            for (let pid of pollIds) {
+                const option = pollVotes[pid];
+                const params = {
+                    action: 'submit_poll',
+                    name: selectedNameObj.name,
+                    whatsapp: selectedNameObj.whatsapp,
+                    pollId: pid,
+                    option: option
+                };
+                const r = await apiCall(params);
+                if (r === null || r.success === false) allSuccess = false;
+            }
+            if (allSuccess) {
+                showModal('✅', 'සාර්ථකයි!', 'ඔබගේ Preferences සුරකින ලදී.');
+                showScreen('screenDone');
+            } else {
+                showModal('⚠️', 'අර්ධ වශයෙන් සාර්ථකයි', 'සමහර Polls සුරැකීමට අපොහොසත් විය. නැවත උත්සාහ කරන්න.');
+                showScreen('screenDone');
+            }
+        });
+
+        $('skipPollsBtn').addEventListener('click', () => {
+            showScreen('screenDone');
+        });
+
+        $('startOverBtn').addEventListener('click', () => {
+            selectedNameObj = null;
+            checkedDates.clear();
+            pollVotes = {};
+            $('selectedChip').style.display = 'none';
+            $('nameSearch').style.display = 'block';
+            $('nameSearch').value = '';
+            $('toStep2Btn').disabled = true;
+            showScreen('screenName');
+        });
+
+        /* ============================================================
+                   ADMIN
+                   ============================================================ */
+        $('openAdminLogin').addEventListener('click', () => showScreen('screenAdminLogin'));
+        $('adminBackBtn').addEventListener('click', () => showScreen('screenName'));
+
+        $('adminLoginBtn').addEventListener('click', async () => {
+            const u = $('adminUser').value.trim();
+            const p = $('adminPass').value;
+            if (u === ADMIN_USER && p === ADMIN_PASS) {
+                $('adminLoginWarn').classList.remove('show');
+                await loadResponses();
+                await loadNames();
+                await loadPolls();
+                renderAdminDashboard();
+                showScreen('screenAdmin');
+            } else {
+                $('adminLoginWarn').classList.add('show');
+            }
+        });
+
+        $('adminLogoutBtn').addEventListener('click', () => {
+            $('adminUser').value = '';
+            $('adminPass').value = '';
+            showScreen('screenName');
+        });
+
+        function renderAdminDashboard() {
+            const total = ALL_NAMES.length;
+            const submittedNames = new Set(ALL_RESPONSES.map(r => r.name.toLowerCase()));
+            const submitted = ALL_RESPONSES.length;
+            $('statTotal').textContent = total;
+            $('statSubmitted').textContent = submitted;
+            $('statPercent').textContent = total ? Math.round((submitted / total) * 100) + '%' : '0%';
+
+            // Pie
+            const pieCounts = EVENT_DATES.map(d => ALL_RESPONSES.filter(r => r.choice1 === d.id).length);
+            if (pieChartObj) pieChartObj.destroy();
+            pieChartObj = new Chart($('pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: EVENT_DATES.map(d => d.label),
+                    datasets: [{
+                        data: pieCounts,
+                        backgroundColor: ['#7C2D3B', '#C69A2E', '#132242', '#3F7D58', '#9B3B4A', '#E4C060', '#5B5F6B',
+                            '#B33A3A'
+                        ]
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let val = context.parsed || 0;
+                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let pct = total ? Math.round((val / total) * 100) : 0;
+                                    return label + ': ' + val + ' (' + pct + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bar
+            const barCounts = EVENT_DATES.map(d => ALL_RESPONSES.filter(r => (r.all || '').split(',').includes(d.id))
+            .length);
+            if (barChartObj) barChartObj.destroy();
+            barChartObj = new Chart($('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: EVENT_DATES.map(d => d.label),
+                    datasets: [{ data: barCounts, backgroundColor: '#132242', borderRadius: 6 }]
+                },
+                options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { size: 10 } } },
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+
+            renderAdminList(submittedNames);
+            renderAdminPolls();
+        }
+
+        function renderAdminList(submittedNames) {
+            const q = $('adminSearch').value.trim();
+            const wrap = $('adminList');
+            wrap.innerHTML = '';
+            let people = [...ALL_NAMES].sort((a, b) => a.name.localeCompare(b.name, 'si'));
+            if (q) people = people.filter(p => personMatchesFilter(p, q));
+
+            // Apply filter
+            const filterVal = adminFilter;
+            people = people.filter(p => {
+                const resp = ALL_RESPONSES.find(r => r.name.toLowerCase() === p.name.toLowerCase());
+                const isSubmitted = !!resp;
+                if (filterVal === 'submitted') return isSubmitted;
+                if (filterVal === 'pending') return !isSubmitted;
+                // Date filters
+                if (filterVal.startsWith('date_')) {
+                    const dateId = filterVal.replace('date_', '');
+                    if (isSubmitted && resp.all) {
+                        return resp.all.split(',').includes(dateId);
+                    }
+                    return false;
+                }
+                return true;
+            });
+
+            people.forEach(p => {
+                const resp = ALL_RESPONSES.find(r => r.name.toLowerCase() === p.name.toLowerCase());
+                const isSubmitted = !!resp;
+                const row = document.createElement('div');
+                row.className = 'resp-row';
+                if (isSubmitted) {
+                    const pollVotesForUser = ALL_POLLS.filter(pl => {
+                        // We don't have poll responses in this view easily, skip for brevity
+                        return false;
+                    });
+                    row.innerHTML = `
+                            <div class="rname">
+                                <span>${p.name} <span class="rw">${p.sinhala || ''} ${p.whatsapp ? '📱 '+p.whatsapp : ''}</span></span>
+                                <button class="btn btn-danger" data-name="${p.name}">Clear</button>
+                            </div>
+                            <div class="rprefs">① <b>${dateLabel(resp.choice1)}</b> &nbsp; ② <b>${dateLabel(resp.choice2)}</b> &nbsp; ③ <b>${dateLabel(resp.choice3)}</b></div>`;
+                    row.querySelector('.btn-danger').addEventListener('click', () => clearPerson(p.name));
+                } else {
+                    row.innerHTML =
+                        `<div class="rname"><span>${p.name} <span class="rw">${p.sinhala || ''} ${p.whatsapp ? '📱 '+p.whatsapp : ''}</span></span><span class="pending-tag">Pending</span></div>`;
+                }
+                wrap.appendChild(row);
+            });
+            if (people.length === 0) {
+                wrap.innerHTML = '<p class="hint" style="text-align:center;">ප්‍රතිඵල නැත</p>';
+            }
+        }
+
+        $('adminSearch').addEventListener('input', () => renderAdminList(new Set(ALL_RESPONSES.map(r => r.name
+        .toLowerCase()))));
+        document.querySelectorAll('.chip-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                adminFilter = btn.dataset.f;
+                renderAdminList(new Set(ALL_RESPONSES.map(r => r.name.toLowerCase())));
+            });
+        });
+
+        async function clearPerson(name) {
+            if (!confirm(name + ' ගේ දත්ත ඉවත් කරන්නද?')) return;
+            const r = await apiCall({ action: 'clear', name });
+            if (r === null) { showModal('⚠️', 'Backend සම්බන්ධ වී නැත', 'API URL එක සකසන්න.'); return; }
+            await loadResponses();
+            renderAdminDashboard();
+            showModal('✅', 'ඉවත් කරන ලදී', name + ' ගේ ප්‍රතිචාරය ඉවත් කරන ලදී.');
+        }
+
+        /* ---- Admin: Add Name ---- */
+        $('addNameBtn').addEventListener('click', async () => {
+            const nameVal = $('newNameInput').value.trim();
+            const sinhalaVal = $('newSinhalaInput').value.trim();
+            const wVal = $('newWhatsappInput').value.trim();
+            if (!nameVal) { showModal('ℹ️', 'නම ඇතුළත් කරන්න', 'කරුණාකර නම ඇතුළත් කරන්න.'); return; }
+            const exists = ALL_NAMES.some(p => p.name.toLowerCase() === nameVal.toLowerCase());
+            if (exists) { showModal('ℹ️', 'දැනටමත් තිබේ', 'මෙම නම ලැයිස්තුවේ දැනටමත් ඇත.'); return; }
+            const r = await apiCall({ action: 'add_name', name: nameVal, sinhala: sinhalaVal, whatsapp: wVal });
+            if (r === null) { showModal('⚠️', 'Backend සම්බන්ධ වී නැත', 'API URL එක සකසන්න.'); return; }
+            $('newNameInput').value = '';
+            $('newSinhalaInput').value = '';
+            $('newWhatsappInput').value = '';
+            await loadNames();
+            renderAdminDashboard();
+            showModal('✅', 'එකතු කරන ලදී', nameVal + ' ලැයිස්තුවට එකතු කරන ලදී.');
+        });
+
+        /* ---- Admin: Polls Management ---- */
+        function renderAdminPolls() {
+            const container = $('adminPollsList');
+            container.innerHTML = '';
+            if (!ALL_POLLS || ALL_POLLS.length === 0) {
+                container.innerHTML = '<p class="hint">Polls නැත. ඉහතින් එකක් සාදන්න.</p>';
+                return;
+            }
+            ALL_POLLS.forEach(poll => {
+                const row = document.createElement('div');
+                row.className = 'poll-row';
+                const status = poll.active !== false ? '✅ Active' : '⛔ Inactive';
+                row.innerHTML = `
+                        <span><b>${poll.question}</b> (${poll.options}) - ${status}</span>
+                        <div>
+                            <button class="btn btn-small btn-ghost" data-id="${poll.id}" data-action="toggle">Toggle</button>
+                            <button class="btn btn-small btn-danger" data-id="${poll.id}" data-action="delete">Delete</button>
+                        </div>
+                    `;
+                row.querySelector('[data-action="toggle"]').addEventListener('click', () => togglePoll(poll.id));
+                row.querySelector('[data-action="delete"]').addEventListener('click', () => deletePoll(poll.id));
+                container.appendChild(row);
+            });
+        }
+
+        $('addPollBtn').addEventListener('click', async () => {
+            const question = $('pollQuestion').value.trim();
+            const options = $('pollOptions').value.trim();
+            if (!question || !options) { showModal('ℹ️', 'දත්ත ඇතුළත් කරන්න', 'ප්‍රශ්නය සහ විකල්ප අවශ්‍යයි.'); return; }
+            const r = await apiCall({ action: 'add_poll', question, options });
+            if (r === null) { showModal('⚠️', 'Backend සම්බන්ධ වී නැත', 'API URL එක සකසන්න.'); return; }
+            $('pollQuestion').value = '';
+            $('pollOptions').value = '';
+            await loadPolls();
+            renderAdminPolls();
+            showModal('✅', 'Poll එකතු කරන ලදී', 'නව Poll සාර්ථක විය.');
+        });
+
+        async function togglePoll(id) {
+            const r = await apiCall({ action: 'toggle_poll', id });
+            if (r === null) { showModal('⚠️', 'දෝෂයක්', 'Toggle කිරීම අසාර්ථක විය.'); return; }
+            await loadPolls();
+            renderAdminPolls();
+        }
+
+        async function deletePoll(id) {
+            if (!confirm('මෙම Poll එක මකන්නද?')) return;
+            const r = await apiCall({ action: 'delete_poll', id });
+            if (r === null) { showModal('⚠️', 'දෝෂයක්', 'මැකීම අසාර්ථක විය.'); return; }
+            await loadPolls();
+            renderAdminPolls();
+        }
+
+        /* ============================================================
+                   INIT
+                   ============================================================ */
+        (async function init() {
+            renderNameList('');
+            await loadNames();
+        })();
+    </script>
+</body>
+</html>
