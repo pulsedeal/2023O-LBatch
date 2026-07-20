@@ -738,7 +738,8 @@
                 <input type="text" id="adminUser" placeholder="Username" style="margin-bottom:10px;" />
                 <input type="password" id="adminPass" placeholder="Password" style="margin-bottom:10px;" />
                 <div class="warn" id="adminLoginWarn">Username/Password වැරදියි. නැවත උත්සාහ කරන්න.</div>
-                <button class="btn btn-primary" id="adminLoginBtn">Login</button>
+                <!-- Added onclick attribute as a fallback -->
+                <button class="btn btn-primary" id="adminLoginBtn" onclick="handleAdminLogin()">Login</button>
                 <button class="btn btn-ghost" id="adminBackBtn">← ආපසු</button>
             </div>
         </div>
@@ -820,7 +821,7 @@
         const ADMIN_PASS = 'mwc318';
 
         /* ============================================================
-                   DATA (Full list with Sinhala & Numbers - UPDATED with Ishara's number)
+                   DATA (Full list with Sinhala & Numbers)
                    ============================================================ */
         const FALLBACK_NAMES = [
             { name: "Beni Nalaka", sinhala: "බෙනී නාලක", whatsapp: "0767975026" },
@@ -879,13 +880,11 @@
         let ALL_NAMES = [...FALLBACK_NAMES];
         let ALL_RESPONSES = [];
         let ALL_POLLS = [];
-        let selectedNameObj = null; // { name, sinhala, whatsapp }
+        let selectedNameObj = null;
         let checkedDates = new Set();
         let pieChartObj = null;
         let barChartObj = null;
         let adminFilter = 'all';
-
-        // Poll votes storage (temporary)
         let pollVotes = {};
 
         /* ============================================================
@@ -915,10 +914,9 @@
             if (!query) return true;
             const q = query.trim().toLowerCase();
             if (!q) return true;
-            const nameMatch = person.name.toLowerCase().includes(q);
-            const sinhalaMatch = person.sinhala && person.sinhala.toLowerCase().includes(q);
-            const wMatch = person.whatsapp && person.whatsapp.toLowerCase().includes(q);
-            return nameMatch || sinhalaMatch || wMatch;
+            return person.name.toLowerCase().includes(q) ||
+                (person.sinhala && person.sinhala.toLowerCase().includes(q)) ||
+                (person.whatsapp && person.whatsapp.toLowerCase().includes(q));
         }
 
         /* ============================================================
@@ -942,7 +940,7 @@
                         const url = API + (API.indexOf('?') > -1 ? '&' : '?') + new URLSearchParams(params).toString();
                         await fetch(url, { mode: 'no-cors' });
                         return { success: true, mode: 'no-cors' };
-                    } catch (_) { /* ignore */ }
+                    } catch (_) {}
                 }
                 return null;
             }
@@ -977,7 +975,7 @@
         }
 
         /* ============================================================
-                   STEP 1 — NAME SEARCH (Number hidden)
+                   STEP 1 — NAME SEARCH
                    ============================================================ */
         function renderNameList(filter) {
             const list = $('nameList');
@@ -1106,7 +1104,6 @@
         ['rank1', 'rank2', 'rank3'].forEach(rid => $(rid).addEventListener('change', enforceRankUniqueness));
 
         $('toPollsBtn').addEventListener('click', async () => {
-            // Load polls before showing
             await loadPolls();
             showScreen('screenPolls');
         });
@@ -1127,10 +1124,11 @@
                 container.innerHTML = '<p class="hint">ක්‍රියාකාරී Polls නැත. ඉදිරියට යන්න.</p>';
                 return;
             }
-            activePolls.forEach((poll, idx) => {
+            activePolls.forEach((poll) => {
                 const div = document.createElement('div');
                 div.className = 'poll-item';
-                div.innerHTML = `<div class="q">${poll.question}</div><div class="poll-options" data-pollid="${poll.id}"></div>`;
+                div.innerHTML =
+                `<div class="q">${poll.question}</div><div class="poll-options" data-pollid="${poll.id}"></div>`;
                 const optContainer = div.querySelector('.poll-options');
                 const options = poll.options.split(',').map(o => o.trim());
                 options.forEach(opt => {
@@ -1151,14 +1149,11 @@
         }
 
         $('submitPollsBtn').addEventListener('click', async () => {
-            // Submit poll votes
             const pollIds = Object.keys(pollVotes);
             if (pollIds.length === 0) {
-                // No votes, just go to done
                 showScreen('screenDone');
                 return;
             }
-            // Submit each vote
             let allSuccess = true;
             for (let pid of pollIds) {
                 const option = pollVotes[pid];
@@ -1176,7 +1171,7 @@
                 showModal('✅', 'සාර්ථකයි!', 'ඔබගේ Preferences සුරකින ලදී.');
                 showScreen('screenDone');
             } else {
-                showModal('⚠️', 'අර්ධ වශයෙන් සාර්ථකයි', 'සමහර Polls සුරැකීමට අපොහොසත් විය. නැවත උත්සාහ කරන්න.');
+                showModal('⚠️', 'අර්ධ වශයෙන් සාර්ථකයි', 'සමහර Polls සුරැකීමට අපොහොසත් විය.');
                 showScreen('screenDone');
             }
         });
@@ -1197,43 +1192,56 @@
         });
 
         /* ============================================================
-                   ADMIN - FIXED LOGIN
+                   ADMIN — FIXED LOGIN (with onclick fallback)
                    ============================================================ */
         $('openAdminLogin').addEventListener('click', () => showScreen('screenAdminLogin'));
         $('adminBackBtn').addEventListener('click', () => showScreen('screenName'));
 
-        // Login button handler - fixed
-        $('adminLoginBtn').addEventListener('click', async function() {
+        // Global function for onclick attribute
+        window.handleAdminLogin = async function() {
+            console.log("handleAdminLogin called via onclick");
             const u = $('adminUser').value.trim();
             const p = $('adminPass').value.trim();
             const warn = $('adminLoginWarn');
 
-            // Clear any previous warning
             warn.classList.remove('show');
 
-            // Check credentials
             if (u === ADMIN_USER && p === ADMIN_PASS) {
-                // Success: hide warning, load data, show dashboard
+                console.log("Login success");
                 warn.classList.remove('show');
-                await loadResponses();
-                await loadNames();
-                await loadPolls();
-                renderAdminDashboard();
-                showScreen('screenAdmin');
+                try {
+                    await loadResponses();
+                    await loadNames();
+                    await loadPolls();
+                    renderAdminDashboard();
+                    showScreen('screenAdmin');
+                } catch (err) {
+                    console.error("Error loading data:", err);
+                    showModal('⚠️', 'දත්ත පූරණය අසාර්ථක විය', 'කරුණාකර නැවත උත්සාහ කරන්න.');
+                }
             } else {
-                // Failure: show warning
+                console.log("Login failed");
                 warn.classList.add('show');
-                // Clear password field for security
                 $('adminPass').value = '';
+            }
+        };
+
+        // Also attach via addEventListener for compatibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = $('adminLoginBtn');
+            if (btn) {
+                // Remove any existing listeners to avoid duplicates
+                btn.removeEventListener('click', window.handleAdminLogin);
+                btn.addEventListener('click', window.handleAdminLogin);
             }
         });
 
-        // Also support pressing Enter on login fields
+        // Enter key support
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const active = document.activeElement;
                 if (active && (active.id === 'adminUser' || active.id === 'adminPass')) {
-                    $('adminLoginBtn').click();
+                    window.handleAdminLogin();
                 }
             }
         });
@@ -1245,11 +1253,10 @@
         });
 
         /* ============================================================
-                   ADMIN DASHBOARD RENDER FUNCTIONS
+                   ADMIN DASHBOARD RENDER
                    ============================================================ */
         function renderAdminDashboard() {
             const total = ALL_NAMES.length;
-            const submittedNames = new Set(ALL_RESPONSES.map(r => r.name.toLowerCase()));
             const submitted = ALL_RESPONSES.length;
             $('statTotal').textContent = total;
             $('statSubmitted').textContent = submitted;
@@ -1264,8 +1271,8 @@
                     labels: EVENT_DATES.map(d => d.label),
                     datasets: [{
                         data: pieCounts,
-                        backgroundColor: ['#7C2D3B', '#C69A2E', '#132242', '#3F7D58', '#9B3B4A', '#E4C060', '#5B5F6B',
-                            '#B33A3A'
+                        backgroundColor: ['#7C2D3B', '#C69A2E', '#132242', '#3F7D58', '#9B3B4A', '#E4C060',
+                            '#5B5F6B', '#B33A3A'
                         ]
                     }]
                 },
@@ -1301,7 +1308,7 @@
                         y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
             });
 
-            renderAdminList(submittedNames);
+            renderAdminList(new Set(ALL_RESPONSES.map(r => r.name.toLowerCase())));
             renderAdminPolls();
         }
 
@@ -1312,7 +1319,6 @@
             let people = [...ALL_NAMES].sort((a, b) => a.name.localeCompare(b.name, 'si'));
             if (q) people = people.filter(p => personMatchesFilter(p, q));
 
-            // Apply filter
             const filterVal = adminFilter;
             people = people.filter(p => {
                 const resp = ALL_RESPONSES.find(r => r.name.toLowerCase() === p.name.toLowerCase());
@@ -1450,6 +1456,7 @@
         (async function init() {
             renderNameList('');
             await loadNames();
+            console.log("App initialized. Admin credentials: mwc / mwc318");
         })();
     </script>
 </body>
