@@ -181,6 +181,25 @@
         .poll-mgmt { background: var(--cream); border-radius: 12px; padding: 14px; margin-top: 10px; }
         .poll-mgmt .poll-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
         .poll-mgmt .poll-row:last-child { border-bottom: none; }
+        .top-bar-actions { display: flex; align-items: center; gap: 14px; }
+        .home-link { font-size: 12.5px; color: var(--navy); text-decoration: underline; cursor: pointer; font-weight: 700; }
+        .resp-row .rpolls { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+        .poll-answer-tag {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            background: var(--cream); border: 1px solid var(--line); border-radius: 8px;
+            padding: 6px 10px; font-size: 12px; color: var(--ink);
+        }
+        .poll-answer-tag .pq { color: var(--ink-soft); }
+        .poll-answer-tag .pa { font-weight: 700; color: var(--burgundy); }
+        .poll-answer-tag .pclear {
+            border: none; background: var(--red); color: #fff; border-radius: 6px;
+            padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; flex-shrink: 0;
+        }
+        .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-delete-name {
+            background: var(--ink-soft); color: #fff; padding: 8px 12px; font-size: 13px;
+            width: auto; margin: 0; border-radius: 8px; border: none; cursor: pointer; font-weight: 700;
+        }
         .debug-badge {
             position: fixed; bottom: 8px; left: 8px; z-index: 999; font-size: 10px;
             background: rgba(0,0,0,0.6); color: #0f0; padding: 4px 8px; border-radius: 6px;
@@ -200,8 +219,8 @@
         <div class="badge-wrap">
             <div class="seal"><div class="yr">2003</div><div class="ol">O / L BATCH</div></div>
             <div class="ribbon">GET-TOGETHER</div>
-            <div class="event-title">යථා තෝරාගැනීමට එකතු වෙමු</div>
-            <div class="event-sub">Reunion Date Selection Form</div>
+            <div class="event-title">Date Pick For Get Together</div>
+            <div class="event-sub">2003 O/L Batch - Madurankuliya M.V.</div>
         </div>
 
         <!-- STEP 1: NAME -->
@@ -288,7 +307,10 @@
             <div class="card">
                 <div class="top-bar">
                     <h2>📊 Admin Dashboard</h2>
-                    <span class="logout" id="adminLogoutBtn">Logout</span>
+                    <div class="top-bar-actions">
+                        <span class="home-link" id="adminHomeBtn">🏠 මුල් පිටුවට</span>
+                        <span class="logout" id="adminLogoutBtn">Logout</span>
+                    </div>
                 </div>
                 <div class="stat-row">
                     <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">මුළු නම්</div></div>
@@ -428,6 +450,7 @@
         let ALL_NAMES = [...FALLBACK_NAMES];
         let ALL_RESPONSES = [];
         let ALL_POLLS = [];
+        let ALL_POLL_RESPONSES = [];
         let selectedNameObj = null;
         let checkedDates = new Set();
         let pieChartObj = null;
@@ -522,6 +545,11 @@
             const r = await apiCall({ action: 'get_polls' });
             ALL_POLLS = (r && r.polls) ? r.polls : [];
             renderPolls();
+        }
+
+        async function loadPollResponses() {
+            const r = await apiCall({ action: 'get_poll_responses' });
+            ALL_POLL_RESPONSES = (r && r.pollResponses) ? r.pollResponses : [];
         }
 
         /* ============================================================
@@ -726,6 +754,7 @@
                 await loadResponses();
                 await loadNames();
                 await loadPolls();
+                await loadPollResponses();
                 renderAdminDashboard();
                 console.log('[AdminLogin] loadAdminData() done');
             } catch (err) {
@@ -815,20 +844,52 @@
             people.forEach(p => {
                 const resp = ALL_RESPONSES.find(r => r.name.toLowerCase() === p.name.toLowerCase());
                 const isSubmitted = !!resp;
+                const myPollAnswers = ALL_POLL_RESPONSES.filter(pr => pr.name.toLowerCase() === p.name.toLowerCase());
+
                 const row = document.createElement('div');
                 row.className = 'resp-row';
+
+                let html = '<div class="rname"><span>' + p.name +
+                    ' <span class="rw">' + (p.sinhala || '') + ' ' + (p.whatsapp ? '📱 ' + p.whatsapp : '') + '</span></span>' +
+                    '<div class="row-actions">';
                 if (isSubmitted) {
-                    row.innerHTML = `
-                            <div class="rname">
-                                <span>${p.name} <span class="rw">${p.sinhala || ''} ${p.whatsapp ? '📱 '+p.whatsapp : ''}</span></span>
-                                <button class="btn btn-danger" data-name="${p.name}">Clear</button>
-                            </div>
-                            <div class="rprefs">① <b>${dateLabel(resp.choice1)}</b> &nbsp; ② <b>${dateLabel(resp.choice2)}</b> &nbsp; ③ <b>${dateLabel(resp.choice3)}</b></div>`;
-                    row.querySelector('.btn-danger').addEventListener('click', () => clearPerson(p.name));
+                    html += '<button class="btn btn-danger" data-action="clear-date">Clear Dates</button>';
                 } else {
-                    row.innerHTML =
-                        `<div class="rname"><span>${p.name} <span class="rw">${p.sinhala || ''} ${p.whatsapp ? '📱 '+p.whatsapp : ''}</span></span><span class="pending-tag">Pending</span></div>`;
+                    html += '<span class="pending-tag">Pending</span>';
                 }
+                html += '<button class="btn-delete-name" data-action="delete-name">🗑 Delete</button>';
+                html += '</div></div>';
+
+                if (isSubmitted) {
+                    html += '<div class="rprefs">① <b>' + dateLabel(resp.choice1) + '</b> &nbsp; ② <b>' +
+                        dateLabel(resp.choice2) + '</b> &nbsp; ③ <b>' + dateLabel(resp.choice3) + '</b></div>';
+                }
+
+                if (myPollAnswers.length > 0) {
+                    html += '<div class="rpolls">';
+                    myPollAnswers.forEach(pr => {
+                        const poll = ALL_POLLS.find(pl => pl.id === pr.pollId);
+                        const qText = poll ? poll.question : pr.pollId;
+                        html += '<div class="poll-answer-tag" data-pollid="' + pr.pollId + '">' +
+                            '<span class="pq">' + qText + ':</span> <span class="pa">' + pr.option + '</span>' +
+                            '<button class="pclear" data-action="clear-poll" data-pollid="' + pr.pollId + '">Clear</button>' +
+                            '</div>';
+                    });
+                    html += '</div>';
+                }
+
+                row.innerHTML = html;
+
+                const clearDateBtn = row.querySelector('[data-action="clear-date"]');
+                if (clearDateBtn) clearDateBtn.addEventListener('click', () => clearPerson(p.name));
+
+                const deleteBtn = row.querySelector('[data-action="delete-name"]');
+                if (deleteBtn) deleteBtn.addEventListener('click', () => deletePerson(p.name));
+
+                row.querySelectorAll('[data-action="clear-poll"]').forEach(btn => {
+                    btn.addEventListener('click', () => clearPollResponse(p.name, btn.dataset.pollid));
+                });
+
                 wrap.appendChild(row);
             });
             if (people.length === 0) {
@@ -837,12 +898,38 @@
         }
 
         async function clearPerson(name) {
-            if (!confirm(name + ' ගේ දත්ත ඉවත් කරන්නද?')) return;
+            if (!confirm(name + ' ගේ දින තෝරාගැනීම් ඉවත් කරන්නද?')) return;
             const r = await apiCall({ action: 'clear', name });
             if (r === null) { showModal('⚠️', 'Backend සම්බන්ධ වී නැත', 'API URL එක සකසන්න.'); return; }
             await loadResponses();
             renderAdminDashboard();
-            showModal('✅', 'ඉවත් කරන ලදී', name + ' ගේ ප්‍රතිචාරය ඉවත් කරන ලදී.');
+            showModal('✅', 'ඉවත් කරන ලදී', name + ' ගේ දින තෝරාගැනීම ඉවත් කරන ලදී.');
+        }
+
+        async function deletePerson(name) {
+            if (!confirm(name + ' සම්පූර්ණයෙන්ම ලැයිස්තුවෙන් ඉවත් කරන්නද? (නම, අංකය, දින සහ Poll පිළිතුරු සියල්ලම මැකෙනු ඇත)')) return;
+            console.log('[Admin] deleting person:', name);
+            const r = await apiCall({ action: 'delete_name', name });
+            if (r === null) { showModal('⚠️', 'Backend සම්බන්ධ වී නැත', 'API URL එක සකසන්න.'); return; }
+            if (r.success === false) { showModal('⚠️', 'දෝෂයක්', r.message || 'ඉවත් කිරීම අසාර්ථක විය.'); return; }
+            await loadNames();
+            await loadResponses();
+            await loadPollResponses();
+            renderAdminDashboard();
+            showModal('✅', 'මකා දමන ලදී', name + ' සම්පූර්ණයෙන්ම ලැයිස්තුවෙන් ඉවත් කරන ලදී.');
+        }
+
+        async function clearPollResponse(name, pollId) {
+            const poll = ALL_POLLS.find(p => p.id === pollId);
+            const qText = poll ? poll.question : pollId;
+            if (!confirm(name + ' ගේ "' + qText + '" පිළිතුර ඉවත් කරන්නද?')) return;
+            console.log('[Admin] clearing poll response:', name, pollId);
+            const r = await apiCall({ action: 'clear_poll_response', name, pollId });
+            if (r === null) { showModal('⚠️', 'Backend සම්බන්ධ වී නැත', 'API URL එක සකසන්න.'); return; }
+            if (r.success === false) { showModal('⚠️', 'දෝෂයක්', r.message || 'ඉවත් කිරීම අසාර්ථක විය.'); return; }
+            await loadPollResponses();
+            renderAdminDashboard();
+            showModal('✅', 'ඉවත් කරන ලදී', 'Poll පිළිතුර ඉවත් කරන ලදී.');
         }
 
         function renderAdminPolls() {
@@ -1008,6 +1095,14 @@
                 sessionStorage.removeItem('adminLoggedIn');
                 $('adminUser').value = '';
                 $('adminPass').value = '';
+                showScreen('screenName');
+            });
+
+            // ---- admin: go back to the start screen WITHOUT logging out ----
+            // (session stays active — clicking the admin link again goes straight
+            // back to the dashboard, no need to log in again)
+            $('adminHomeBtn').addEventListener('click', () => {
+                console.log('[Admin] home button clicked — going to start screen, session kept');
                 showScreen('screenName');
             });
 
