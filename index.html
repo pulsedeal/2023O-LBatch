@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js">
     </script>
     <style>
-        /* ── CSS Variables ── */
+        /* ── All styles remain the same as before ── */
         :root {
             --navy: #132242;
             --navy-2: #1c3157;
@@ -50,7 +50,6 @@
             width: 100%;
             max-width: 480px;
         }
-
         /* ── Badge ── */
         .badge-wrap {
             display: flex;
@@ -112,7 +111,6 @@
             margin-top: 4px;
             opacity: 0.9;
         }
-
         /* ── Cards ── */
         .card {
             background: var(--paper);
@@ -151,7 +149,6 @@
             margin: 0 0 14px;
             line-height: 1.6;
         }
-
         /* ── Inputs ── */
         .search-box {
             position: relative;
@@ -207,7 +204,6 @@
             font-size: 12.5px;
             font-weight: 600;
         }
-
         .selected-chip {
             margin-top: 12px;
             display: flex;
@@ -236,7 +232,6 @@
             color: var(--ink-soft);
             margin-left: 6px;
         }
-
         /* ── Buttons ── */
         .btn {
             width: 100%;
@@ -289,8 +284,7 @@
             background: var(--green);
             color: #fff;
         }
-
-        /* ── Tickets (Dates) ── */
+        /* ── Tickets ── */
         .tickets {
             display: flex;
             flex-direction: column;
@@ -337,7 +331,6 @@
             color: var(--ink-soft);
             font-weight: 600;
         }
-
         .warn {
             font-size: 13.5px;
             color: var(--burgundy);
@@ -352,8 +345,7 @@
         .warn.show {
             display: block;
         }
-
-        /* ── Rank section ── */
+        /* ── Rank ── */
         .rank-section {
             margin-top: 20px;
             border-top: 1.5px dashed var(--line);
@@ -383,7 +375,6 @@
             color: var(--ink);
             font-family: inherit;
         }
-
         /* ── Polls ── */
         .poll-item {
             background: #fff;
@@ -424,7 +415,6 @@
             border-color: var(--burgundy);
             background: #fce8ea;
         }
-
         /* ── Screens ── */
         .screen {
             display: none;
@@ -432,7 +422,6 @@
         .screen.show {
             display: block;
         }
-
         /* ── Modal ── */
         .modal-bg {
             position: fixed;
@@ -471,7 +460,6 @@
             color: var(--ink-soft);
             line-height: 1.6;
         }
-
         .admin-link {
             text-align: center;
             margin-top: 10px;
@@ -480,7 +468,6 @@
             text-decoration: underline;
             cursor: pointer;
         }
-
         /* ── Admin Dashboard ── */
         .stat-row {
             display: flex;
@@ -579,7 +566,6 @@
             border-radius: 8px;
             font-weight: 700;
         }
-
         .add-name-row {
             display: flex;
             gap: 8px;
@@ -614,7 +600,6 @@
             cursor: pointer;
             font-weight: 700;
         }
-
         .poll-mgmt {
             background: var(--cream);
             border-radius: 12px;
@@ -631,7 +616,6 @@
         .poll-mgmt .poll-row:last-child {
             border-bottom: none;
         }
-
         @media (max-width: 400px) {
             .add-name-row .flex-group {
                 flex-direction: column;
@@ -683,23 +667,12 @@
                 <p class="hint">ඔබට සහභාගී විය හැකි <b>අවම වශයෙන් දින 3ක්</b> තෝරන්න.</p>
                 <div class="tickets" id="ticketList"></div>
                 <div class="warn" id="minWarn">⚠️ අවම දින තුනක් තෝරන්න.</div>
-
                 <div class="rank-section" id="rankSection">
                     <p class="hint" style="margin-bottom:12px;">තෝරාගත් දින අනුපිළිවෙලට අංකනය කරන්න —</p>
-                    <div class="rank-row">
-                        <label>① වැඩිපුරම කැමති දවස</label>
-                        <select id="rank1"><option value="">-- තෝරන්න --</option></select>
-                    </div>
-                    <div class="rank-row">
-                        <label>② දෙවනුව කැමති දවස</label>
-                        <select id="rank2"><option value="">-- තෝරන්න --</option></select>
-                    </div>
-                    <div class="rank-row">
-                        <label>③ තෙවනුව කැමති දවස</label>
-                        <select id="rank3"><option value="">-- තෝරන්න --</option></select>
-                    </div>
+                    <div class="rank-row"><label>① වැඩිපුරම කැමති දවස</label><select id="rank1"><option value="">-- තෝරන්න --</option></select></div>
+                    <div class="rank-row"><label>② දෙවනුව කැමති දවස</label><select id="rank2"><option value="">-- තෝරන්න --</option></select></div>
+                    <div class="rank-row"><label>③ තෙවනුව කැමති දවස</label><select id="rank3"><option value="">-- තෝරන්න --</option></select></div>
                 </div>
-
                 <button class="btn btn-primary" id="toPollsBtn" disabled>ඉදිරියට (Polls) →</button>
                 <button class="btn btn-ghost" id="backTo1Btn">← ආපසු</button>
             </div>
@@ -728,23 +701,24 @@
             </div>
         </div>
 
-        <!-- ADMIN LINK -->
+        <!-- ADMIN LINK (now points to login screen) -->
         <div class="admin-link" id="openAdminLogin">🔒 පාලක පිවිසුම (Admin)</div>
 
-        <!-- ADMIN LOGIN -->
+        <!-- ADMIN LOGIN (with form) -->
         <div class="screen" id="screenAdminLogin">
             <div class="card">
                 <h2 class="card-title">Admin Login</h2>
-                <input type="text" id="adminUser" placeholder="Username" style="margin-bottom:10px;" />
-                <input type="password" id="adminPass" placeholder="Password" style="margin-bottom:10px;" />
-                <div class="warn" id="adminLoginWarn">Username/Password වැරදියි. නැවත උත්සාහ කරන්න.</div>
-                <!-- Added onclick attribute as a fallback -->
-                <button class="btn btn-primary" id="adminLoginBtn" onclick="handleAdminLogin()">Login</button>
+                <form id="adminLoginForm" onsubmit="return handleAdminLogin(event)">
+                    <input type="text" id="adminUser" placeholder="Username" style="margin-bottom:10px;" required />
+                    <input type="password" id="adminPass" placeholder="Password" style="margin-bottom:10px;" required />
+                    <div class="warn" id="adminLoginWarn">Username/Password වැරදියි. නැවත උත්සාහ කරන්න.</div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
                 <button class="btn btn-ghost" id="adminBackBtn">← ආපසු</button>
             </div>
         </div>
 
-        <!-- ADMIN DASHBOARD -->
+        <!-- ADMIN DASHBOARD (separate page) -->
         <div class="screen" id="screenAdmin">
             <div class="card">
                 <div class="top-bar">
@@ -758,7 +732,6 @@
                 </div>
                 <div class="chart-wrap"><h4>🥧 වැඩිපුරම කැමති දවස් (1st choice)</h4><canvas id="pieChart" height="220"></canvas></div>
                 <div class="chart-wrap"><h4>📊 සම්පූර්ණ ඇදහීම් (All picks per date)</h4><canvas id="barChart" height="220"></canvas></div>
-
                 <div class="add-name-row">
                     <div class="flex-group">
                         <input type="text" id="newNameInput" placeholder="නම (English)" />
@@ -814,15 +787,15 @@
 
     <script>
         /* ============================================================
-                   CONFIG
-                   ============================================================ */
+           CONFIG
+           ============================================================ */
         const API = 'https://script.google.com/macros/s/AKfycbxRKi-U5DCSgSb920N8kmryCf0NQTJpi6zCOjrhy_LiIhhSKmBYzS1Qf8uFPkOT0Qz9Qg/exec';
         const ADMIN_USER = 'mwc';
         const ADMIN_PASS = 'mwc318';
 
         /* ============================================================
-                   DATA (Full list with Sinhala & Numbers)
-                   ============================================================ */
+           DATA (Full list with Sinhala & Numbers)
+           ============================================================ */
         const FALLBACK_NAMES = [
             { name: "Beni Nalaka", sinhala: "බෙනී නාලක", whatsapp: "0767975026" },
             { name: "Madushanka Chandrasekare", sinhala: "මධුශංක චන්ද්‍රසේකර", whatsapp: "0718987353" },
@@ -875,8 +848,8 @@
         ];
 
         /* ============================================================
-                   STATE
-                   ============================================================ */
+           STATE
+           ============================================================ */
         let ALL_NAMES = [...FALLBACK_NAMES];
         let ALL_RESPONSES = [];
         let ALL_POLLS = [];
@@ -888,8 +861,8 @@
         let pollVotes = {};
 
         /* ============================================================
-                   HELPERS
-                   ============================================================ */
+           HELPERS
+           ============================================================ */
         function $(id) { return document.getElementById(id); }
 
         function showScreen(id) {
@@ -920,8 +893,8 @@
         }
 
         /* ============================================================
-                   API CALL
-                   ============================================================ */
+           API CALL
+           ============================================================ */
         async function apiCall(params) {
             if (!API || API.indexOf('PASTE_YOUR') === 0) {
                 console.warn('API URL not configured.');
@@ -947,8 +920,8 @@
         }
 
         /* ============================================================
-                   LOAD DATA
-                   ============================================================ */
+           LOAD DATA
+           ============================================================ */
         async function loadNames() {
             const r = await apiCall({ action: 'get_names' });
             if (r && r.names && r.names.length) {
@@ -975,8 +948,8 @@
         }
 
         /* ============================================================
-                   STEP 1 — NAME SEARCH
-                   ============================================================ */
+           STEP 1 — NAME SEARCH
+           ============================================================ */
         function renderNameList(filter) {
             const list = $('nameList');
             const sorted = [...ALL_NAMES].sort((a, b) => a.name.localeCompare(b.name, 'si'));
@@ -1031,8 +1004,8 @@
         $('backTo1Btn').addEventListener('click', () => showScreen('screenName'));
 
         /* ============================================================
-                   STEP 2 — DATES
-                   ============================================================ */
+           STEP 2 — DATES
+           ============================================================ */
         function renderTickets() {
             const wrap = $('ticketList');
             wrap.innerHTML = '';
@@ -1110,8 +1083,8 @@
         $('backToDatesBtn').addEventListener('click', () => showScreen('screenDates'));
 
         /* ============================================================
-                   STEP 3 — POLLS
-                   ============================================================ */
+           STEP 3 — POLLS
+           ============================================================ */
         function renderPolls() {
             const container = $('pollsContainer');
             container.innerHTML = '';
@@ -1192,14 +1165,20 @@
         });
 
         /* ============================================================
-                   ADMIN — FIXED LOGIN (with onclick fallback)
-                   ============================================================ */
-        $('openAdminLogin').addEventListener('click', () => showScreen('screenAdminLogin'));
-        $('adminBackBtn').addEventListener('click', () => showScreen('screenName'));
+           ADMIN — NEW ROBUST LOGIN
+           ============================================================ */
+        // Check session on load
+        (function checkSession() {
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                // Already logged in – show dashboard directly
+                showScreen('screenAdmin');
+                loadAdminData();
+            }
+        })();
 
-        // Global function for onclick attribute
-        window.handleAdminLogin = async function() {
-            console.log("handleAdminLogin called via onclick");
+        // Handle login form submission
+        window.handleAdminLogin = function(e) {
+            e.preventDefault(); // prevent page reload
             const u = $('adminUser').value.trim();
             const p = $('adminPass').value.trim();
             const warn = $('adminLoginWarn');
@@ -1207,54 +1186,58 @@
             warn.classList.remove('show');
 
             if (u === ADMIN_USER && p === ADMIN_PASS) {
-                console.log("Login success");
+                // Success
+                sessionStorage.setItem('adminLoggedIn', 'true');
                 warn.classList.remove('show');
-                try {
-                    await loadResponses();
-                    await loadNames();
-                    await loadPolls();
-                    renderAdminDashboard();
-                    showScreen('screenAdmin');
-                } catch (err) {
-                    console.error("Error loading data:", err);
-                    showModal('⚠️', 'දත්ත පූරණය අසාර්ථක විය', 'කරුණාකර නැවත උත්සාහ කරන්න.');
-                }
+                // Load data and show dashboard
+                loadAdminData();
+                showScreen('screenAdmin');
             } else {
-                console.log("Login failed");
                 warn.classList.add('show');
                 $('adminPass').value = '';
             }
+            return false;
         };
 
-        // Also attach via addEventListener for compatibility
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = $('adminLoginBtn');
-            if (btn) {
-                // Remove any existing listeners to avoid duplicates
-                btn.removeEventListener('click', window.handleAdminLogin);
-                btn.addEventListener('click', window.handleAdminLogin);
+        // Function to load data and render dashboard
+        async function loadAdminData() {
+            try {
+                await loadResponses();
+                await loadNames();
+                await loadPolls();
+                renderAdminDashboard();
+            } catch (err) {
+                console.error('Error loading admin data:', err);
+                showModal('⚠️', 'දත්ත පූරණය අසාර්ථක විය', 'කරුණාකර නැවත උත්සාහ කරන්න.');
             }
-        });
+        }
 
-        // Enter key support
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const active = document.activeElement;
-                if (active && (active.id === 'adminUser' || active.id === 'adminPass')) {
-                    window.handleAdminLogin();
-                }
-            }
-        });
-
+        // Logout
         $('adminLogoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('adminLoggedIn');
             $('adminUser').value = '';
             $('adminPass').value = '';
+            // Clear admin data from UI
             showScreen('screenName');
+            // Optionally reset dashboard
         });
 
+        // Admin link opens login screen
+        $('openAdminLogin').addEventListener('click', () => {
+            // If already logged in, go directly to dashboard
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                showScreen('screenAdmin');
+                loadAdminData();
+            } else {
+                showScreen('screenAdminLogin');
+            }
+        });
+
+        $('adminBackBtn').addEventListener('click', () => showScreen('screenName'));
+
         /* ============================================================
-                   ADMIN DASHBOARD RENDER
-                   ============================================================ */
+           ADMIN DASHBOARD RENDER
+           ============================================================ */
         function renderAdminDashboard() {
             const total = ALL_NAMES.length;
             const submitted = ALL_RESPONSES.length;
@@ -1451,12 +1434,12 @@
         }
 
         /* ============================================================
-                   INIT
-                   ============================================================ */
+           INIT
+           ============================================================ */
         (async function init() {
             renderNameList('');
             await loadNames();
-            console.log("App initialized. Admin credentials: mwc / mwc318");
+            console.log('App initialized. Admin: mwc / mwc318');
         })();
     </script>
 </body>
