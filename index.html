@@ -737,7 +737,7 @@
                 <h2 class="card-title">Admin Login</h2>
                 <input type="text" id="adminUser" placeholder="Username" style="margin-bottom:10px;" />
                 <input type="password" id="adminPass" placeholder="Password" style="margin-bottom:10px;" />
-                <div class="warn" id="adminLoginWarn">Username/Password වැරදියි.</div>
+                <div class="warn" id="adminLoginWarn">Username/Password වැරදියි. නැවත උත්සාහ කරන්න.</div>
                 <button class="btn btn-primary" id="adminLoginBtn">Login</button>
                 <button class="btn btn-ghost" id="adminBackBtn">← ආපසු</button>
             </div>
@@ -1197,23 +1197,44 @@
         });
 
         /* ============================================================
-                   ADMIN
+                   ADMIN - FIXED LOGIN
                    ============================================================ */
         $('openAdminLogin').addEventListener('click', () => showScreen('screenAdminLogin'));
         $('adminBackBtn').addEventListener('click', () => showScreen('screenName'));
 
-        $('adminLoginBtn').addEventListener('click', async () => {
+        // Login button handler - fixed
+        $('adminLoginBtn').addEventListener('click', async function() {
             const u = $('adminUser').value.trim();
-            const p = $('adminPass').value;
+            const p = $('adminPass').value.trim();
+            const warn = $('adminLoginWarn');
+
+            // Clear any previous warning
+            warn.classList.remove('show');
+
+            // Check credentials
             if (u === ADMIN_USER && p === ADMIN_PASS) {
-                $('adminLoginWarn').classList.remove('show');
+                // Success: hide warning, load data, show dashboard
+                warn.classList.remove('show');
                 await loadResponses();
                 await loadNames();
                 await loadPolls();
                 renderAdminDashboard();
                 showScreen('screenAdmin');
             } else {
-                $('adminLoginWarn').classList.add('show');
+                // Failure: show warning
+                warn.classList.add('show');
+                // Clear password field for security
+                $('adminPass').value = '';
+            }
+        });
+
+        // Also support pressing Enter on login fields
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const active = document.activeElement;
+                if (active && (active.id === 'adminUser' || active.id === 'adminPass')) {
+                    $('adminLoginBtn').click();
+                }
             }
         });
 
@@ -1223,6 +1244,9 @@
             showScreen('screenName');
         });
 
+        /* ============================================================
+                   ADMIN DASHBOARD RENDER FUNCTIONS
+                   ============================================================ */
         function renderAdminDashboard() {
             const total = ALL_NAMES.length;
             const submittedNames = new Set(ALL_RESPONSES.map(r => r.name.toLowerCase()));
@@ -1295,7 +1319,6 @@
                 const isSubmitted = !!resp;
                 if (filterVal === 'submitted') return isSubmitted;
                 if (filterVal === 'pending') return !isSubmitted;
-                // Date filters
                 if (filterVal.startsWith('date_')) {
                     const dateId = filterVal.replace('date_', '');
                     if (isSubmitted && resp.all) {
@@ -1312,10 +1335,6 @@
                 const row = document.createElement('div');
                 row.className = 'resp-row';
                 if (isSubmitted) {
-                    const pollVotesForUser = ALL_POLLS.filter(pl => {
-                        // We don't have poll responses in this view easily, skip for brevity
-                        return false;
-                    });
                     row.innerHTML = `
                             <div class="rname">
                                 <span>${p.name} <span class="rw">${p.sinhala || ''} ${p.whatsapp ? '📱 '+p.whatsapp : ''}</span></span>
